@@ -1,0 +1,2 @@
+platformio run -e tasmota
+platformio run -e tasmota32s2

@@ -1,0 +1,24 @@
+#ifdef MY_LANGUAGE
+  #undef MY_LANGUAGE
+#endif
+#define MY_LANGUAGE	fr_FR
+
+#ifdef MODULE
+  #undef MODULE
+#endif
+#define MODULE                 USER_MODULE   // [Module] Select default model (the list is kModuleNiceList() in file tasmota_template.h) USER_MODULE is the TEMPLATE
+
+#ifdef FALLBACK_MODULE
+  #undef FALLBACK_MODULE
+#endif
+#define FALLBACK_MODULE        USER_MODULE   // to Select the default model as FALLBACK when the user does a RESET 1 
+
+#ifdef USER_TEMPLATE
+  #undef USER_TEMPLATE
+#endif
+#define USER_TEMPLATE          "{\"NAME\":\"T-Info-ESP32S2\",\"GPIO\":[0,0,0,0,0,0,0,0,0,0,0,1536,1472,0,0,0,0,0,0,0,0,0,0,0,0,5632,0,0,0,0,0,0,0,0,0,0],\"FLAG\":0,\"BASE\":1}" // [Template] Set JSON template
+
+#ifdef USE_TELEINFO
+  #undef USE_TELEINFO
+#endif
+#define USE_TELEINFO
