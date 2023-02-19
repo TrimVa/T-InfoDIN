@@ -1,0 +1,209 @@
+# Basic Config
+esphome:
+  name: linky-tic
+
+# https://esphome.io/components/esp8266.html
+esp8266:
+  board: d1_mini
+
+substitutions:
+  device_name: "Linky"
+
+# Enable logging
+logger:
+  baud_rate: 0
+
+# Enable Home Assistant API
+api:
+
+# Enable Web server 
+# Web Server: https://esphome.io/components/web_server.html
+web_server:
+  local: true
+  port: 80
+
+# Enable OTA  
+ota:
+
+# Wifi Setting
+wifi:
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: ${device_name} Hotspot
+
+# Hotspot    
+captive_portal:
+
+# MQTT Brocker conf
+#mqtt:
+#  broker: !secret mqtt_broker
+#  username: !secret mqtt_user
+#  password: !secret mqtt_pass
+#  reboot_timeout: 30s    
+
+# Text sensors with general information.
+text_sensor:
+  # Expose ESPHome version as sensor.
+  - platform: version
+    name: ${device_name} ESPHome Version
+ # UpTime lisible
+  - platform: template
+    name: ${device_name} Uptime
+    lambda: |-
+      int seconds = (id(uptime_en_seconde).state);
+      int days = seconds / (24 * 3600);
+        seconds = seconds % (24 * 3600); 
+      int hours = seconds / 3600;
+        seconds = seconds % 3600;
+      int minutes = seconds /  60;
+        seconds = seconds % 60;
+      return { (String(days) +" Jours, " + String(hours) +" h, " + String(minutes) +" m, "+ String(seconds) +" s").c_str() };
+    icon: mdi:clock-start
+    update_interval: 60s
+  # Expose WiFi information as sensors.
+  - platform: wifi_info
+    ip_address:
+      name: ${device_name} IP
+    ssid:
+      name: ${device_name} SSID
+    bssid:
+      name: ${device_name} BSSID   
+
+      # Status Binary Sensor: https://esphome.io/components/binary_sensor/status.html
+binary_sensor:
+  - platform: status
+    name: ${device_name} Status
+
+# Restart Button: https://esphome.io/components/button/restart.html
+button:
+  - platform: restart
+    name: ${device_name} Restart
+
+# https://esphome.io/custom/uart.html
+uart:
+  id: uart_bus
+  rx_pin: GPIO3
+  baud_rate: 9600 # 9600 == mode standard, 1200 == mode historique
+  parity: EVEN
+  data_bits: 7
+  stop_bits: 1
+
+# https://esphome.io/components/sensor/teleinfo.html
+teleinfo:
+  update_interval: 5s
+  historical_mode: false # false == mode standard, true == mode historique
+
+# https://esphome.io/components/sensor/index.html
+sensor:
+  # WiFi
+  - platform: wifi_signal
+    name: ${device_name} WiFi Signal
+    unit_of_measurement: dB
+    accuracy_decimals: 0
+    update_interval: 60s
+    icon: mdi:wifi
+  # Uptime
+  - platform: uptime
+    name: ${device_name} Uptime
+    id: uptime_en_seconde
+    unit_of_measurement: s
+    accuracy_decimals: 0
+    update_interval: 60s
+    icon: mdi:clock-start
+    
+  #--------------
+  # MODE STANDARD
+  #--------------
+  
+  # Énergie active soutirée totale
+  - platform: teleinfo
+    tag_name: "EAST"
+    name: "Linky Energie Soutirée"
+    unit_of_measurement: kWh
+    device_class: energy
+    state_class: total_increasing
+    icon: mdi:flash
+    accuracy_decimals: 2
+    filters:
+      - multiply: 0.001
+  # Courant Efficace, phase 1
+  - platform: teleinfo
+    tag_name: "IRMS1"
+    name: "Linky Courant Efficace"
+    unit_of_measurement: A
+    device_class: current
+    state_class: measurement
+    icon: mdi:current-ac
+  # Tension Efficace, phase 1
+  - platform: teleinfo
+    tag_name: "URMS1"
+    name: "Linky Tension Efficace"
+    unit_of_measurement: V
+    device_class: voltage
+    state_class: measurement
+    icon: mdi:flash-triangle
+  # Puissance app. de référence
+  - platform: teleinfo
+    tag_name: "PREF"
+    name: "Linky Puissance Apparente Référence"
+    state_class: measurement
+    device_class: apparent_power
+    unit_of_measurement: kVA
+    icon: mdi:information
+  # Puissance app. Instantanée Soutirée
+  - platform: teleinfo
+    tag_name: "SINSTS"
+    name: "Linky Puissance Apparente Instantanée Soutirée"
+    unit_of_measurement: VA
+    state_class: measurement
+    device_class: apparent_power
+    icon: mdi:gauge
+  # Puissance Instantanée Soutirée
+  - platform: teleinfo
+    tag_name: "CCASN"
+    name: "Linky Puissance Soutirée"
+    unit_of_measurement: W
+    state_class: measurement
+    device_class: power
+    icon: mdi:gauge
+
+  #----------------------------
+  # MODE STANDARD - PRODUCTEURS
+  #----------------------------
+  
+  # Energie active injectée totale
+  - platform: teleinfo
+    tag_name: "EAIT"
+    name: "Linky Energie Injectée"
+    unit_of_measurement: kWh
+    device_class: energy
+    state_class: total_increasing
+    icon: mdi:flash
+    accuracy_decimals: 2
+    filters:
+      - multiply: 0.001
+  # Puissance app. Instantanée Injectée
+  - platform: teleinfo
+    tag_name: "SINSTI"
+    name: "Linky Puissance Apparente Instantanée Injectée"
+    unit_of_measurement: VA
+    state_class: measurement
+    device_class: apparent_power
+    icon: mdi:gauge
+  # Puissance app. Maximale Injectée
+  - platform: teleinfo
+    tag_name: "SMAXIN"
+    name: "Linky Puissance Apparente Maximale Injectée"
+    unit_of_measurement: VA
+    state_class: measurement
+    device_class: apparent_power
+    icon: mdi:gauge
+  # Puissance Instantanée injectée
+  - platform: teleinfo
+    tag_name: "CCAIN"
+    name: "Linky Puissance Injectée"
+    unit_of_measurement: W
+    state_class: measurement
+    device_class: power
+    icon: mdi:gauge
