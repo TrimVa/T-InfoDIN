@@ -8,8 +8,9 @@ esp8266:
 
 # https://esphome.io/components/esp32.html
 #esp32:
-#  board: lolin_s2_mini
-#  variant: esp32s2
+#  board: esp32-s2-saola-1
+#  framework:
+#    type: arduino
 
 substitutions:
   device_name: "Linky"
