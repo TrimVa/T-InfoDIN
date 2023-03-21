@@ -1,7 +1,7 @@
 # Basic Config
 esphome:
   name: "esphome-linky"
-  friendly_name: ESPHome - Linky
+  friendly_name: "ESPHome - Linky"
 
 # https://esphome.io/components/esp8266.html
 esp8266:
@@ -20,14 +20,15 @@ web_server:
 
 # Enable OTA  
 ota:
+  password: !secret ota_password
 
 # Wifi Setting
 wifi:
 
-  # Enable fallback hotspot (captive portal) in case wifi connection fails
+# Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
     ssid: "Hotspot"
-
+    
 # Hotspot    
 captive_portal:
 
@@ -42,7 +43,7 @@ captive_portal:
 text_sensor:
   # Expose ESPHome version as sensor.
   - platform: version
-    name: "ESPHome version"
+    name: "ESPHome Version"
  # UpTime lisible
   - platform: template
     name: "Uptime"
@@ -57,16 +58,16 @@ text_sensor:
       return { (String(days) +" Jours, " + String(hours) +" h, " + String(minutes) +" m, "+ String(seconds) +" s").c_str() };
     icon: mdi:clock-start
     update_interval: 60s
-  # Expose WiFi information as sensors.
+# Expose WiFi information as sensors.
   - platform: wifi_info
     ip_address:
-      name: "IP"
+       name: "IP"
     ssid:
       name: "SSID"
     bssid:
       name: "BSSID"  
 
-      # Status Binary Sensor: https://esphome.io/components/binary_sensor/status.html
+# Status Binary Sensor: https://esphome.io/components/binary_sensor/status.html
 binary_sensor:
   - platform: status
     name: "Status"
@@ -131,29 +132,27 @@ sensor:
     power_factor:
       name: "PZEM Facteur de puissance"
     update_interval: 5s   
-    
-  # TIC MODE STANDARD
-  
-  # Énergie active soutirée totale
- - platform: teleinfo
-   tag_name: "BASE"
-   name: "TIC Index Base"
-   unit_of_measurement: kWh
-   device_class: energy
-   state_class: total_increasing
-   icon: mdi:flash
-   accuracy_decimals: 2
-   filters:
-     - multiply: 0.001 
-  # Courant Efficace
- - platform: teleinfo
-   tag_name: "IINST"
-   name: "TIC Intensité Instantanée"
-   unit_of_measurement: A
-   device_class: current
-   state_class: measurement
-   icon: mdi:current-ac
-  # Tension Efficace, phase 1
+     
+# Énergie active soutirée totale
+  - platform: teleinfo
+    tag_name: "BASE"
+    name: "TIC Index Base"
+    unit_of_measurement: kWh
+    device_class: energy
+    state_class: total_increasing
+    icon: mdi:flash
+    accuracy_decimals: 2
+    filters:
+      - multiply: 0.001 
+# Courant Efficace
+  - platform: teleinfo
+    tag_name: "IINST"
+    name: "TIC Intensité Instantanée"
+    unit_of_measurement: A
+    device_class: current
+    state_class: measurement
+    icon: mdi:current-ac
+# Tension Efficace, phase 1
   - platform: teleinfo
     tag_name: "URMS1"
     name: "TIC Tension"
@@ -161,7 +160,7 @@ sensor:
     device_class: voltage
     state_class: measurement
     icon: mdi:flash-triangle
-  # Puissance app. Instantanée Soutirée
+# Puissance app. Instantanée Soutirée
   - platform: teleinfo
     tag_name: "PAPP"
     name: "TIC Puissance Apparente Instantanée Soutirée"
@@ -169,50 +168,10 @@ sensor:
     state_class: measurement
     device_class: apparent_power
     icon: mdi:gauge
-  # Puissance Instantanée Soutirée
+# Puissance Instantanée Soutirée
   - platform: teleinfo
     tag_name: "CCASN"
     name: "TIC Puissance Soutirée"
-    unit_of_measurement: W
-    state_class: measurement
-    device_class: power
-    icon: mdi:gauge
-
-  #----------------------------
-  # MODE STANDARD - PRODUCTEURS
-  #----------------------------
-  
-  # Energie active injectée totale
-  - platform: teleinfo
-    tag_name: "EAIT"
-    name: "TIC Energie Injectée"
-    unit_of_measurement: kWh
-    device_class: energy
-    state_class: total_increasing
-    icon: mdi:flash
-    accuracy_decimals: 2
-    filters:
-      - multiply: 0.001
-  # Puissance app. Instantanée Injectée
-  - platform: teleinfo
-    tag_name: "SINSTI"
-    name: "TIC VA Instantanée Injectée"
-    unit_of_measurement: VA
-    state_class: measurement
-    device_class: apparent_power
-    icon: mdi:gauge
-  # Puissance app. Maximale Injectée
-  - platform: teleinfo
-    tag_name: "SMAXIN"
-    name: "TIC VA Max Injectée"
-    unit_of_measurement: VA
-    state_class: measurement
-    device_class: apparent_power
-    icon: mdi:gauge
-  # Puissance Instantanée injectée
-  - platform: teleinfo
-    tag_name: "CCAIN"
-    name: "TIC Puissance Injectée"
     unit_of_measurement: W
     state_class: measurement
     device_class: power
