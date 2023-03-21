@@ -20,8 +20,7 @@ web_server:
 
 # Enable OTA  
 ota:
-  password: !secret ota_password
-
+  
 # Wifi Setting
 wifi:
 
