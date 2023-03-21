@@ -1,13 +1,11 @@
 # Basic Config
 esphome:
-  name: "esphome-linky-historique"
+  name: "esphome-linky"
+  friendly_name: ESPHome - Linky
 
 # https://esphome.io/components/esp8266.html
 esp8266:
   board: d1_mini
-
-substitutions:
-  device_name: "ESPHome - Linky"
 
 # Enable logging
 logger:
@@ -44,10 +42,10 @@ captive_portal:
 text_sensor:
   # Expose ESPHome version as sensor.
   - platform: version
-    name: ${device_name} ESPHome Version
+    name: "ESPHome version"
  # UpTime lisible
   - platform: template
-    name: ${device_name} Uptime
+    name: "Uptime"
     lambda: |-
       int seconds = (id(uptime_en_seconde).state);
       int days = seconds / (24 * 3600);
@@ -62,21 +60,21 @@ text_sensor:
   # Expose WiFi information as sensors.
   - platform: wifi_info
     ip_address:
-      name: ${device_name} IP
+      name: "IP"
     ssid:
-      name: ${device_name} SSID
+      name: "SSID"
     bssid:
-      name: ${device_name} BSSID   
+      name: "BSSID"  
 
       # Status Binary Sensor: https://esphome.io/components/binary_sensor/status.html
 binary_sensor:
   - platform: status
-    name: ${device_name} Status
+    name: "Status"
 
 # Restart Button: https://esphome.io/components/button/restart.html
 button:
   - platform: restart
-    name: ${device_name} Restart
+    name: "Restart"
 
 # https://esphome.io/custom/uart.html
 uart:
@@ -105,14 +103,14 @@ teleinfo:
 sensor:
   # WiFi
   - platform: wifi_signal
-    name: ${device_name} WiFi Signal
+    name: "WiFi Signal"
     unit_of_measurement: dB
     accuracy_decimals: 0
     update_interval: 60s
     icon: mdi:wifi
   # Uptime
   - platform: uptime
-    name: ${device_name} Uptime
+    name: "Uptime"
     id: uptime_en_seconde
     unit_of_measurement: s
     accuracy_decimals: 0
@@ -121,40 +119,40 @@ sensor:
   # PZEM004T
   - platform: pzemac
     current:
-      name: ${device_name} PZEM Intensité
+      name: "PZEM Intensité"
     voltage:
-      name: ${device_name} PZEM Tension
+      name: "PZEM Tension"
     energy:
-      name: ${device_name} PZEM Énergie
+      name: "PZEM Énergie"
     power:
-      name: ${device_name} PZEM Puissance
+      name: "PZEM Puissance"
     frequency:
-      name: ${device_name} PZEM Fréquence
+      name: "PZEM Fréquence"
     power_factor:
-      name: ${device_name} PZEM Facteur de puissance
+      name: "PZEM Facteur de puissance"
     update_interval: 5s   
     
   # TIC MODE STANDARD
   
   # Énergie active soutirée totale
-  - platform: teleinfo
-    tag_name: "EAST"
-    name: "TIC Energie Soutirée"
-    unit_of_measurement: kWh
-    device_class: energy
-    state_class: total_increasing
-    icon: mdi:flash
-    accuracy_decimals: 2
-    filters:
-      - multiply: 0.001
-  # Courant Efficace, phase 1
-  - platform: teleinfo
-    tag_name: "IRMS1"
-    name: "TIC Intensité"
-    unit_of_measurement: A
-    device_class: current
-    state_class: measurement
-    icon: mdi:current-ac
+ - platform: teleinfo
+   tag_name: "BASE"
+   name: "TIC Index Base"
+   unit_of_measurement: kWh
+   device_class: energy
+   state_class: total_increasing
+   icon: mdi:flash
+   accuracy_decimals: 2
+   filters:
+     - multiply: 0.001 
+  # Courant Efficace
+ - platform: teleinfo
+   tag_name: "IINST"
+   name: "TIC Intensité Instantanée"
+   unit_of_measurement: A
+   device_class: current
+   state_class: measurement
+   icon: mdi:current-ac
   # Tension Efficace, phase 1
   - platform: teleinfo
     tag_name: "URMS1"
@@ -163,17 +161,9 @@ sensor:
     device_class: voltage
     state_class: measurement
     icon: mdi:flash-triangle
-  # Puissance app. de référence
-  - platform: teleinfo
-    tag_name: "PREF"
-    name: "TIC Puissance Apparente Référence"
-    state_class: measurement
-    device_class: apparent_power
-    unit_of_measurement: kVA
-    icon: mdi:information
   # Puissance app. Instantanée Soutirée
   - platform: teleinfo
-    tag_name: "SINSTS"
+    tag_name: "PAPP"
     name: "TIC Puissance Apparente Instantanée Soutirée"
     unit_of_measurement: VA
     state_class: measurement
